@@ -31,6 +31,7 @@ class ListaProdutosActivity : AppCompatActivity() {
     private fun configuraRecyclerView() {
         val recyclerView = binding.activityListProdutosReciclerView
         recyclerView.adapter = adapter
+        navegarParaDetalhes()
     }
 
     private fun configuraFab() {
@@ -43,6 +44,15 @@ class ListaProdutosActivity : AppCompatActivity() {
     private fun navegarParaFormulario() {
         val intent = Intent(this, FormularioProdutoActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun navegarParaDetalhes() {
+        adapter.callbackItem = {
+            val intent = Intent(this, DetalhesProdutoActivity::class.java).apply {
+                putExtra(CHAVE_PRODUTO, it)
+            }
+            startActivity(intent)
+        }
     }
 
 }

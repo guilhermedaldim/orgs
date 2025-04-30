@@ -8,27 +8,39 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.orgs.databinding.ProdutoItemBinding
 import com.example.orgs.extensions.carregarImagem
+import com.example.orgs.extensions.formatarParaReal
 import com.example.orgs.model.Produto
-import java.math.BigDecimal
-import java.text.NumberFormat
-import java.util.Locale
 
 class ListaProdutosAdapter(
     private val context: Context,
     produtos: List<Produto>,
+    var callbackItem: (produto: Produto) -> Unit = {},
 ) : RecyclerView.Adapter<ListaProdutosAdapter.ViewHolder>() {
 
     private val produtos = produtos.toMutableList()
 
-    class ViewHolder(private val binding: ProdutoItemBinding) :
+    inner class ViewHolder(private val binding: ProdutoItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        private lateinit var produto: Produto
+
+        init {
+            itemView.setOnClickListener {
+                if (::produto.isInitialized) {
+                    callbackItem(produto)
+                }
+            }
+        }
+
         fun vincula(produto: Produto) {
+            this.produto = produto
             val nome = binding.produtoItemNome
             nome.text = produto.nome
             val descricao = binding.produtoItemDescricao
             descricao.text = produto.descricao
             val valor = binding.produtoItemValor
-            valor.text = formatarParaReal(produto.valor)
+            val valorEmReal = produto.valor.formatarParaReal(produto.valor)
+            valor.text = valorEmReal
 
             binding.produtoItemImagem.visibility = if (produto.imagem != null) {
                 View.VISIBLE
@@ -59,9 +71,4 @@ class ListaProdutosAdapter(
         notifyDataSetChanged()
     }
 
-}
-
-private fun formatarParaReal(valor: BigDecimal): String? {
-    val valorReal = NumberFormat.getCurrencyInstance(Locale("pt", "BR")).format(valor)
-    return valorReal
 }
