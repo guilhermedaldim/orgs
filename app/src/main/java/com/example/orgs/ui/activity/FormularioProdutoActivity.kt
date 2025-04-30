@@ -1,23 +1,37 @@
 package com.example.orgs.ui.activity
 
 import android.os.Bundle
-import android.widget.EditText
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.example.orgs.R
 import com.example.orgs.dao.ProdutosDao
+import com.example.orgs.databinding.ActivityFormularioProdutoBinding
+import com.example.orgs.extensions.carregarImagem
 import com.example.orgs.model.Produto
+import com.example.orgs.ui.dialog.FormularioImagemDialog
 import java.math.BigDecimal
 
-class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario_produto) {
+class FormularioProdutoActivity : AppCompatActivity() {
+
+    private val binding by lazy {
+        ActivityFormularioProdutoBinding.inflate(layoutInflater)
+    }
+
+    private var url: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+        title = "Cadastrar Produto"
         configuraBotaoSalvar()
+        binding.activityFormularioProdutoImagem.setOnClickListener {
+            FormularioImagemDialog(this).showDialog(url) { imagem ->
+                url = imagem
+                binding.activityFormularioProdutoImagem.carregarImagem(url)
+            }
+        }
     }
 
     private fun configuraBotaoSalvar() {
-        val botaoSalvar = findViewById<Button>(R.id.activity_formulario_produto_botao_salvar)
+        val botaoSalvar = binding.activityFormularioProdutoBotaoSalvar
         val produtosDao = ProdutosDao()
         botaoSalvar.setOnClickListener {
             val produto = criarProduto()
@@ -30,15 +44,15 @@ class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario
     }
 
     private fun criarProduto(): Produto {
-        val inputNome = findViewById<EditText>(R.id.activity_formulario_produto_nome)
+        val inputNome = binding.activityFormularioProdutoNome
         val nome = inputNome.text.toString()
 
-        val inputDescricao = findViewById<EditText>(R.id.activity_formulario_produto_descricao)
+        val inputDescricao = binding.activityFormularioProdutoDescricao
         val descricao = inputDescricao.text.toString()
 
-        val inputValor = findViewById<EditText>(R.id.activity_formulario_produto_valor)
+        val inputValor = binding.activityFormularioProdutoValor
         val valorString = inputValor.text.toString()
-        val valor = if(valorString.isBlank()) {
+        val valor = if (valorString.isBlank()) {
             BigDecimal.ZERO
         } else {
             BigDecimal(valorString)
@@ -47,7 +61,8 @@ class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario
         return Produto(
             nome = nome,
             descricao = descricao,
-            valor = valor
+            valor = valor,
+            imagem = url,
         )
     }
 }

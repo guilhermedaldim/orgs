@@ -1,5 +1,10 @@
 [versions]
 agp = "8.9.2"
+coil = "3.1.0"
+coilBase = "3.0.0"
+coilGif = "3.1.0"
+coilNetworkOkhttp = "3.1.0"
+coilOkhttp = "2.4.0"
 kotlin = "2.0.21"
 coreKtx = "1.10.1"
 junit = "4.13.2"
@@ -13,6 +18,12 @@ constraintlayout = "2.1.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+coil = { module = "io.coil-kt:coil", version.ref = "coil" }
+coil-base = { module = "io.coil-kt:coil-base", version.ref = "coilBase" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-okhttp = { module = "io.coil-kt:coil-okhttp", version.ref = "coilOkhttp" }
+coil3-coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coilGif" }
+coil3-coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
