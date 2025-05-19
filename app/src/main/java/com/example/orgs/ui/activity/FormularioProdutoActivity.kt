@@ -2,7 +2,7 @@ package com.example.orgs.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.orgs.dao.ProdutosDao
+import com.example.orgs.database.AppDatabase
 import com.example.orgs.databinding.ActivityFormularioProdutoBinding
 import com.example.orgs.extensions.carregarImagem
 import com.example.orgs.model.Produto
@@ -32,12 +32,11 @@ class FormularioProdutoActivity : AppCompatActivity() {
 
     private fun configuraBotaoSalvar() {
         val botaoSalvar = binding.activityFormularioProdutoBotaoSalvar
-        val produtosDao = ProdutosDao()
+        val db = AppDatabase.instance(this)
+        val produtoDao = db.produtoDao()
         botaoSalvar.setOnClickListener {
             val produto = criarProduto()
-
-            val dao = produtosDao
-            dao.adicionar(produto)
+            produtoDao.salvar(produto)
 
             finish() //Fecha a tela de adicionar produto e volta para a lista
         }
@@ -66,3 +65,4 @@ class FormularioProdutoActivity : AppCompatActivity() {
         )
     }
 }
+
