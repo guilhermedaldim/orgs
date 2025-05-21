@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.orgs.ui.activity
 
 import android.os.Bundle
@@ -17,6 +19,8 @@ class FormularioProdutoActivity : AppCompatActivity() {
 
     private var url: String? = null
 
+    private var idProduto = 0L
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -28,15 +32,31 @@ class FormularioProdutoActivity : AppCompatActivity() {
                 binding.activityFormularioProdutoImagem.carregarImagem(url)
             }
         }
+
+        intent.getParcelableExtra<Produto>(CHAVE_PRODUTO)?.let { produtoCarregado ->
+            title = "Editar Produto"
+            idProduto = produtoCarregado.id
+            url = produtoCarregado.imagem
+            binding.activityFormularioProdutoImagem.carregarImagem(produtoCarregado.imagem)
+            binding.activityFormularioProdutoNome.setText(produtoCarregado.nome)
+            binding.activityFormularioProdutoDescricao.setText(produtoCarregado.descricao)
+            binding.activityFormularioProdutoValor.setText(produtoCarregado.valor.toPlainString())
+        }
     }
 
     private fun configuraBotaoSalvar() {
         val botaoSalvar = binding.activityFormularioProdutoBotaoSalvar
         val db = AppDatabase.instance(this)
         val produtoDao = db.produtoDao()
+
         botaoSalvar.setOnClickListener {
             val produto = criarProduto()
-            produtoDao.salvar(produto)
+
+            if (idProduto > 0) {
+                produtoDao.atualizar(produto)
+            } else {
+                produtoDao.salvar(produto)
+            }
 
             finish() //Fecha a tela de adicionar produto e volta para a lista
         }
@@ -58,6 +78,7 @@ class FormularioProdutoActivity : AppCompatActivity() {
         }
 
         return Produto(
+            id = idProduto,
             nome = nome,
             descricao = descricao,
             valor = valor,

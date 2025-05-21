@@ -34,6 +34,8 @@ class ListaProdutosActivity : AppCompatActivity() {
         val recyclerView = binding.activityListProdutosReciclerView
         recyclerView.adapter = adapter
         navegarParaDetalhes()
+        editarItem()
+        deletarItem()
     }
 
     private fun configuraFab() {
@@ -55,6 +57,14 @@ class ListaProdutosActivity : AppCompatActivity() {
             }
             startActivity(intent)
         }
+    }
+
+    private fun editarItem() {
+        adapter.callbackEditar = {}
+    }
+
+    private fun deletarItem() {
+        adapter.callbackDeletar = {}
     }
 
 }

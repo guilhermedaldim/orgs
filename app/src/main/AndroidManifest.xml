@@ -28,7 +28,6 @@
         </activity>
         <activity
             android:name=".ui.activity.DetalhesProdutoActivity"
-            android:theme="@style/Theme.Orgs.NoActionBar"
             android:exported="true"
             android:windowSoftInputMode="stateVisible"
             >

@@ -3,9 +3,12 @@ package com.example.orgs.ui.recyclerview.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
+import com.example.orgs.R
 import com.example.orgs.databinding.ProdutoItemBinding
 import com.example.orgs.extensions.carregarImagem
 import com.example.orgs.extensions.formatarParaReal
@@ -15,12 +18,14 @@ class ListaProdutosAdapter(
     private val context: Context,
     produtos: List<Produto> = emptyList(),
     var callbackItem: (produto: Produto) -> Unit = {},
+    var callbackEditar: (produto: Produto) -> Unit = {},
+    var callbackDeletar: (produto: Produto) -> Unit = {},
 ) : RecyclerView.Adapter<ListaProdutosAdapter.ViewHolder>() {
 
     private val produtos = produtos.toMutableList()
 
     inner class ViewHolder(private val binding: ProdutoItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+        RecyclerView.ViewHolder(binding.root), PopupMenu.OnMenuItemClickListener {
 
         private lateinit var produto: Produto
 
@@ -29,6 +34,14 @@ class ListaProdutosAdapter(
                 if (::produto.isInitialized) {
                     callbackItem(produto)
                 }
+            }
+
+            itemView.setOnLongClickListener {
+                PopupMenu(context, itemView).apply {
+                    menuInflater.inflate(R.menu.menu_detalhes_produto, menu)
+                    setOnMenuItemClickListener(this@ViewHolder)
+                }.show()
+                true
             }
         }
 
@@ -50,6 +63,20 @@ class ListaProdutosAdapter(
 
             binding.produtoItemImagem.carregarImagem(produto.imagem)
         }
+
+        override fun onMenuItemClick(item: MenuItem?): Boolean {
+            item?.let {
+                when(it.itemId) {
+                    R.id.menu_detalhes_produto_editar -> {
+                        callbackEditar(produto)
+                    }
+                    R.id.menu_detalhes_produto_remover -> {
+                        callbackDeletar(produto)
+                    }
+                }
+            }
+            return true
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -70,5 +97,4 @@ class ListaProdutosAdapter(
         this.produtos.addAll(produtos)
         notifyDataSetChanged()
     }
-
 }
